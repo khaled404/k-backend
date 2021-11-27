@@ -9,7 +9,7 @@ const app = express();
 const port = 8080;
 
 app.use(bodyParser.json());
-app.use((req, res, next) => {
+app.use((_req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
     'Access-Control-Allow-Methods',
@@ -25,10 +25,9 @@ AppRouter.map((item) => {
 
 app.use((error: never, _req, res, _next) => {
   const errors: IError = error;
-  const status = errors.statusCode || 500;
-  const message = errors.message;
-  const data = errors.data;
-  res.status(status).json({ message, data });
+  res
+    .status(errors.statusCode || 500)
+    .json({ message: errors.message, errors: errors.errors });
 });
 
 mongoose

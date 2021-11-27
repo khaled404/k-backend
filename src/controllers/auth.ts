@@ -1,17 +1,10 @@
-import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
-import { IError } from '../models/error';
 import User from '../models/user';
+import { NextFunction, Request, Response } from 'express';
+import checkIsError from '../util/checkIsError';
 
-const signup = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const error: IError = {
-      statusCode: 422,
-      data: errors.array(),
-    };
-    throw error;
-  }
+const signup = (req: Request, res: Response, next: NextFunction) => {
+  checkIsError(req);
   const { email, name, password } = req.body;
   bcrypt
     .hash(password, 12)
