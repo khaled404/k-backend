@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import bodyParser from 'body-parser';
 import express from 'express';
 import mongoose from 'mongoose';
+import { IError } from './models/error';
 import AppRouter from './routes';
 
 const app = express();
@@ -21,14 +23,19 @@ AppRouter.map((item) => {
   app.use(item.routeName, item.routes);
 });
 
-app.get('/', (req, res) => {
-  res.send('The sedulous hyena ate the antelope!');
+app.use((error: never, _req, res, _next) => {
+  const errors: IError = error;
+  const status = errors.statusCode || 500;
+  const message = errors.message;
+  const data = errors.data;
+  res.status(status).json({ message, data });
 });
+
 mongoose
   .connect(
     'mongodb+srv://khaled:XM8.Gff5tqTt8*m@cluster0.gzzx2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   )
-  .then((result) => {
+  .then(() => {
     app.listen(port);
   })
   .catch((err) => console.log(err));

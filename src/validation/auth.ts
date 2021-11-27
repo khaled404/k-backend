@@ -1,0 +1,23 @@
+import { body } from 'express-validator';
+import user from '../models/user';
+
+const signupValidation = [
+  body('email')
+    .isEmail()
+    .withMessage('email is require.')
+    .custom(async (value) => {
+      const isEmailExists = await user.findOne({ email: value });
+      if (isEmailExists) {
+        return Promise.reject('email address already exists!');
+      }
+    })
+    .normalizeEmail(),
+  body('name').trim().not().notEmpty().withMessage('name is require.'),
+  body('password')
+    .trim()
+    .isLength({ min: 5 })
+    .notEmpty()
+    .withMessage('password is require.'),
+];
+
+export { signupValidation };
