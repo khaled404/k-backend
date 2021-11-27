@@ -37,7 +37,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
     const token = sign(
       { email: user.email, userId: user._id.toString() },
-      'secretSuperSecret',
+      process.env.secretToken,
       { expiresIn: '1h' },
     );
     const sendUser = { id: user._id, email: user.email, name: user.name };

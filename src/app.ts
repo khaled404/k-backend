@@ -4,9 +4,12 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { IError } from './models/error';
 import AppRouter from './routes';
+import { config } from 'dotenv';
+import path from 'path';
+
+config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
-const port = 8080;
 
 app.use(bodyParser.json());
 app.use((_req, res, next) => {
@@ -31,10 +34,8 @@ app.use((error: never, _req, res, _next) => {
 });
 
 mongoose
-  .connect(
-    'mongodb+srv://khaled:XM8.Gff5tqTt8*m@cluster0.gzzx2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
-  )
+  .connect(process.env.mongooseConnect)
   .then(() => {
-    app.listen(port);
+    app.listen(process.env.port);
   })
   .catch((err) => console.log(err));
