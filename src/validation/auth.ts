@@ -20,4 +20,12 @@ const signupValidation = [
     .withMessage('password is require.'),
 ];
 
-export { signupValidation };
+const loginValidation = [
+  body('email').isEmail().withMessage('email is require.').normalizeEmail(),
+  body('password')
+    .trim()
+    .isLength({ min: 5 })
+    .notEmpty()
+    .withMessage('password is require.'),
+];
+export { signupValidation, loginValidation };
