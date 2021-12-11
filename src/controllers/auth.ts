@@ -5,6 +5,13 @@ import checkIsError from '../util/checkIsError';
 import sendError from '../util/sendError';
 import { sign } from 'jsonwebtoken';
 
+const convertUser = (user: any) => ({
+  id: user._id,
+  name: user.name,
+  email: user.email,
+  active: user.active,
+});
+
 const signup = async (req: Request, res: Response, next: NextFunction) => {
   const { email, name, password } = req.body;
 
@@ -40,11 +47,66 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
       process.env.secretToken,
       { expiresIn: '1h' },
     );
-    const sendUser = { id: user._id, email: user.email, name: user.name };
-    res.send({ token, ...sendUser });
+    const sendUser = convertUser(user);
+    res.send({ token, user: sendUser });
   } catch (error) {
     next(error);
   }
 };
 
-export { signup, login };
+const getCurrentUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { id } = req.params;
+
+  try {
+    checkIsError(req);
+
+    const user = await User.findById(id);
+    if (!user) sendError('Not authenticated', 401);
+
+    const sendUser = convertUser(user);
+    res.send({ user: sendUser });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getAllUsers = async (req: any, res: Response, next: NextFunction) => {
+  const { page = 1 } = req.query;
+  const perPage = 2;
+
+  try {
+    checkIsError(req);
+
+    const count = await User.find().countDocuments();
+    const users = await User.find()
+      .skip((page - 1) * perPage)
+      .limit(perPage);
+    res.send({
+      users: users.map(convertUser),
+      pagination: {
+        total: count,
+        current: page,
+        next: page + 1,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+
+  try {
+    checkIsError(req);
+    return User.findByIdAndRemove(id);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { signup, login, getCurrentUser, getAllUsers, deleteUser };

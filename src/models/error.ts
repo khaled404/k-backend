@@ -1,6 +1,6 @@
 export interface IError {
   statusCode: number;
-  errors: { value?: unknown; message: string }[];
+  errors: { message: string }[];
 
   message?: string;
 }

@@ -15,7 +15,7 @@ const isAuth = (req: any, _res: Response, next: NextFunction) => {
     req.userId = decodedToken.userId;
     next();
   } catch (error) {
-    sendError(error);
+    sendError(error.errors[0].message);
   }
 };
 

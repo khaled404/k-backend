@@ -9,7 +9,7 @@ const checkIsError = (req: Request) => {
       statusCode: 422,
       errors: errors
         .array()
-        .map((item) => ({ value: item.value, message: item.msg }))
+        .map((item) => ({ message: item.msg }))
         .filter((e) => e.message !== 'Invalid value'),
     };
     throw error;
