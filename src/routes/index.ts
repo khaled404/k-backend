@@ -1,8 +1,8 @@
-import { Router } from 'express';
-import authRoutes from './auth';
+import type { TAppRouter } from '../types';
+import authentication from './authentication';
 
-type TAppRouter = { routeName: string; routes: Router }[];
-
-const AppRouter: TAppRouter = [{ routeName: '/auth', routes: authRoutes }];
+const AppRouter: TAppRouter[] = [
+  { routeName: '/authentication', routes: authentication },
+];
 
 export default AppRouter;

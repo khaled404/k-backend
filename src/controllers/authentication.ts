@@ -1,16 +1,8 @@
+import type { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import User from '../models/user';
-import { NextFunction, Request, Response } from 'express';
-import checkIsError from '../util/checkIsError';
-import sendError from '../util/sendError';
 import { sign } from 'jsonwebtoken';
-
-const convertUser = (user: any) => ({
-  id: user._id,
-  name: user.name,
-  email: user.email,
-  active: user.active,
-});
+import { checkIsError, convertToSchema, sendError } from '../util';
 
 const signup = async (req: Request, res: Response, next: NextFunction) => {
   const { email, name, password } = req.body;
@@ -43,11 +35,11 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     if (!isEqual) sendError('Wrong password!', 401);
 
     const token = sign(
-      { email: user.email, userId: user._id.toString() },
+      { email: user.email, userId: user._id },
       process.env.secretToken,
       { expiresIn: '1h' },
     );
-    const sendUser = convertUser(user);
+    const sendUser = convertToSchema(user);
     res.send({ token, user: sendUser });
   } catch (error) {
     next(error);
@@ -67,32 +59,8 @@ const getCurrentUser = async (
     const user = await User.findById(id);
     if (!user) sendError('Not authenticated', 401);
 
-    const sendUser = convertUser(user);
+    const sendUser = convertToSchema(user);
     res.send({ user: sendUser });
-  } catch (error) {
-    next(error);
-  }
-};
-
-const getAllUsers = async (req: any, res: Response, next: NextFunction) => {
-  const { page = 1 } = req.query;
-  const perPage = 2;
-
-  try {
-    checkIsError(req);
-
-    const count = await User.find().countDocuments();
-    const users = await User.find()
-      .skip((page - 1) * perPage)
-      .limit(perPage);
-    res.send({
-      users: users.map(convertUser),
-      pagination: {
-        total: count,
-        current: page,
-        next: page + 1,
-      },
-    });
   } catch (error) {
     next(error);
   }
@@ -109,4 +77,4 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { signup, login, getCurrentUser, getAllUsers, deleteUser };
+export { signup, login, getCurrentUser, deleteUser };

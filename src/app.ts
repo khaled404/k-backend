@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import bodyParser from 'body-parser';
-import express from 'express';
+import express, { NextFunction, Response, Request } from 'express';
 import mongoose from 'mongoose';
-import { IError } from './models/error';
 import AppRouter from './routes';
 import { config } from 'dotenv';
 import path from 'path';
+import type { TError } from './types';
 
 config({ path: path.resolve(__dirname, '../.env') });
 
@@ -26,11 +26,8 @@ AppRouter.map((item) => {
   app.use(item.routeName, item.routes);
 });
 
-app.use((error: never, _req, res, _next) => {
-  const errors: IError = error;
-  res
-    .status(errors.statusCode || 500)
-    .json({ message: errors.message, errors: errors.errors });
+app.use((error: TError, req: Request, res: Response, next: NextFunction) => {
+  res.status(error.status).json(error);
 });
 
 mongoose

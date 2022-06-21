@@ -13,10 +13,6 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
-  active: {
-    type: Schema.Types.Boolean,
-    default: true,
-  },
 });
 
 export default model('user', UserSchema);

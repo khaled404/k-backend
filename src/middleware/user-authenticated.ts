@@ -1,13 +1,14 @@
-import { NextFunction, Response } from 'express';
+import type { NextFunction, Response } from 'express';
 import { verify } from 'jsonwebtoken';
-import sendError from '../util/sendError';
+import { sendError } from '../util';
 
-const isAuth = (req: any, _res: Response, next: NextFunction) => {
+type TVerify = { userId: string };
+const userAuthenticated = (req: any, _res: Response, next: NextFunction) => {
   try {
     const authHeaders = req.get('Authorization');
     if (!authHeaders) sendError('Not authenticated', 401);
     const token = req.get('Authorization')?.split(' ')[1];
-    const decodedToken: any = verify(token, process.env.secretToken);
+    const decodedToken = verify(token, process.env.secretToken) as TVerify;
     if (!decodedToken) {
       sendError('Not authenticated.', 401);
     }
@@ -19,4 +20,4 @@ const isAuth = (req: any, _res: Response, next: NextFunction) => {
   }
 };
 
-export default isAuth;
+export default userAuthenticated;
