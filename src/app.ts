@@ -36,6 +36,6 @@ app.use((error: never, _req, res, _next) => {
 mongoose
   .connect(process.env.mongooseConnect)
   .then(() => {
-    app.listen(process.env.port);
+    app.listen(process.env.PORT);
   })
   .catch((err) => console.log(err));
