@@ -1,5 +1,5 @@
 import { body } from 'express-validator';
-import user from '../models/user';
+import user from '../../models/authentication';
 
 const signupValidation = [
   body('email')

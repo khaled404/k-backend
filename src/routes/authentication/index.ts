@@ -1,7 +1,11 @@
 import { Router } from 'express';
-import userAuthenticated from '../middleware/user-authenticated';
-import { loginValidation, signupValidation } from '../validation';
-import { login, signup, getCurrentUser } from '../controllers/authentication';
+import userAuthenticated from '../../middleware/user-authenticated';
+import { loginValidation, signupValidation } from '../../validation';
+import {
+  login,
+  signup,
+  getCurrentUser,
+} from '../../controllers/authentication';
 
 const router = Router();
 

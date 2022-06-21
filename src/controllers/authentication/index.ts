@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import User from '../models/user';
+import User from '../../models/authentication';
 import { sign } from 'jsonwebtoken';
-import { checkIsError, convertToSchema, sendError } from '../util';
+import { checkIsError, convertToSchema, sendError } from '../../util';
 
 const signup = async (req: Request, res: Response, next: NextFunction) => {
   const { email, name, password } = req.body;
