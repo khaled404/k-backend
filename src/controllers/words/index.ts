@@ -29,11 +29,10 @@ const addNewWord = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const deleteWords = async (req: Request, res: Response, next: NextFunction) => {
-  const { body } = req;
+  const { query } = req;
   try {
     checkIsError(req);
-    await Words.findOneAndRemove({ _id: body.id });
-
+    await Words.findOneAndRemove({ _id: query.id });
     res.send({ message: 'successfully removed' });
   } catch (error) {
     next(error);

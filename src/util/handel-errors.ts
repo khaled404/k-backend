@@ -14,7 +14,10 @@ const checkIsError = (req: Request) => {
   if (!errors.isEmpty()) {
     const error = {
       status: 422,
-      errors: errors.array().map((item) => ({ message: item.msg })),
+      errors: errors
+        .array()
+        .map((item) => ({ message: item.msg }))
+        .filter((item) => item.message !== 'Invalid value'),
     };
     throw error;
   }
