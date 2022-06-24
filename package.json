@@ -4,8 +4,10 @@
   "description": "my first backend application",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon --watch './**/*.ts' --exec 'ts-node' ./src/app.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon --watch './**/*.ts' --exec 'ts-node' ./src/app.ts",
+    "start": "ts-node dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p ."
   },
   "repository": {
     "type": "git",
